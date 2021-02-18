@@ -1,15 +1,16 @@
+package Colliders;
+
+import GameObjects.GameObject;
 import processing.core.PVector;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Collider {
-    static List<Collider> colliders1 = new ArrayList<>();
-    static int counter = 0;
+    public static List<Collider> colliders1 = new ArrayList<>();
 
     GameObject gameObject;
     private PVector positionDiff;
-    private int id;
     boolean collided;
     boolean lowerEdge = false;
 
@@ -23,32 +24,30 @@ public abstract class Collider {
         this.colY = colY;
         this.positionDiff = new PVector(gameObject.position.x - colX, gameObject.position.y - colY);
         this.collided = false;
-        this.id = counter;
-        colliders1.add(this.id, this);
+        colliders1.add(0, this);
     }
 
+    /**
+     * checks if collider collides with any other colliders
+     * @return true if in collision with another object
+     */
     public abstract boolean checkCollision();
 
-    public List<PVector> getTouchVectors() {
-        return touchVectors;
-    }
-
+    /**
+     * updates collider based on object's velocity and collision with other objects
+     */
     public void update(){
         updatePosition();
         PVector resultVector = new PVector(0, 0);
         if (checkCollision()) {
-            List<PVector> touchVectors = getTouchVectors();
             for (PVector tv : touchVectors) {
                 //in case of touching from lower edge
                 if (tv.y < 0) {
-//                    resultVector.add(tv.mult(gameObject.velocity.y));
                     gameObject.velocity.y = 0;
                 }
                 //in case of touching from sides
                 else {
-//                    resultVector.add(tv.mult(gameObject.velocity.x));
                     if ((gameObject.velocity.x > 0 && tv.x < 0) || (gameObject.velocity.x < 0 && tv.x > 0)){
-//                        resultVector.add(tv.mult(gameObject.velocity.x));
                         gameObject.velocity.x = 0;
                     }
                 }
@@ -57,7 +56,11 @@ public abstract class Collider {
         gameObject.velocity.add(resultVector);
     }
 
-    public void updatePosition(){
+    /**
+     * update position of the collider so that it's in the same distance as when
+     * initialized
+     */
+    private void updatePosition(){
         this.colX = gameObject.position.x + positionDiff.x;
         this.colY = gameObject.position.y + positionDiff.y;
     }
@@ -66,7 +69,15 @@ public abstract class Collider {
         return collided;
     }
 
-    public int getId() {
-        return id;
+    public float getColX() {
+        return colX;
+    }
+
+    public float getColY() {
+        return colY;
+    }
+
+    public static void resetColliders(){
+        colliders1 = new ArrayList<>();
     }
 }

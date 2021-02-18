@@ -1,4 +1,4 @@
-import processing.core.PApplet;
+package Inputs;
 
 public interface IInput {
     void update(float moveSpeed);

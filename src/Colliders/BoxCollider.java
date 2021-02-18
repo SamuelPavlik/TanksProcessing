@@ -1,3 +1,6 @@
+package Colliders;
+
+import GameObjects.GameObject;
 import processing.core.PVector;
 import java.util.ArrayList;
 
@@ -13,6 +16,10 @@ public class BoxCollider extends Collider {
         this.height = height;
     }
 
+    /**
+     * checks if collider collides with any other colliders and initializes touchVectors
+     * @return true if in collision with another object
+     */
     @Override
     public boolean checkCollision() {
         touchVectors = new ArrayList<>();
@@ -30,13 +37,15 @@ public class BoxCollider extends Collider {
                             && (circle.colX - circle.radius < this.colX + this.width)){
                         PVector touchVector = null;
                         //if touching from lower edge
-                        if ((circle.colY > this.colY + this.height) && (circle.colX > this.colX) && (circle.colX + width < this.colX)){
-                            lowerEdge = true;
-                            touchVector = new PVector(0, -1);
-                        }
-                        //if touching from upper edge
-                        else if ((circle.colY < this.colY) && (circle.colX > this.colX) && (circle.colX + width < this.colX)){
-                            touchVector = new PVector(0, 1);
+                        if ((circle.colX + circle.radius > this.colX) && (circle.colX - circle.radius < this.colX + this.width)){
+                            if ((circle.colY - circle.radius < this.colY + this.height)){
+                                lowerEdge = true;
+                                touchVector = new PVector(0, -1);
+                            }
+                            //if touching from upper edge
+                            else if (circle.colY + circle.radius > this.colY){
+                                touchVector = new PVector(0, 1);
+                            }
                         }
                         //if touching from sides
                         else if ((circle.colY > this.colY) && (circle.colY < this.colY + this.height)){
@@ -87,11 +96,20 @@ public class BoxCollider extends Collider {
                             collided = true;
                             touchVectors.add(touchVector);
                         }
+                        collided = true;
                     }
                 }
             }
         }
 
         return collided;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
     }
 }

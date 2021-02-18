@@ -1,3 +1,6 @@
+package Colliders;
+
+import GameObjects.GameObject;
 import processing.core.PVector;
 
 import java.util.ArrayList;
@@ -6,13 +9,18 @@ import java.util.List;
 public class CircleCollider extends Collider {
     float radius;
 
-    List<GameObject> touched;
+    private List<GameObject> touched;
 
     public CircleCollider(GameObject gameObject, float x, float y, float radius) {
         super(gameObject, x, y);
         this.radius = radius;
+        this.touched = new ArrayList<>();
     }
 
+    /**
+     * checks if collider collides with any other colliders and initializes the fields touchVectors and touched
+     * @return true if in collision with another object
+     */
     @Override
     public boolean checkCollision() {
         touched = new ArrayList<>();
@@ -74,5 +82,9 @@ public class CircleCollider extends Collider {
         }
 
         return collided;
+    }
+
+    public List<GameObject> getTouched() {
+        return touched;
     }
 }
